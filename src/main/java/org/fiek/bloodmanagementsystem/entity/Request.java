@@ -24,11 +24,11 @@ public class Request {
     @Temporal(TemporalType.DATE)
     private Date requiredDate;
 
+    @ManyToOne(targetEntity = BloodGroup.class)
+    @JoinColumn(name = "blood_group", referencedColumnName = "id", nullable = false)
+    private BloodGroup group;
+
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "user", referencedColumnName = "id", nullable = false)
     private User user;
-
-    @ManyToOne(targetEntity = BloodGroup.class)
-    @JoinColumn(name = "group", referencedColumnName = "id", nullable = false)
-    private BloodGroup group;
 }
