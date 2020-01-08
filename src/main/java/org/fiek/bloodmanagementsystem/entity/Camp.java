@@ -37,4 +37,12 @@ public class Camp {
 
     @OneToMany(targetEntity = Donation.class, mappedBy = "camp", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Donation> donationList;
+
+    public Camp(String campTitle, String state, String city, String details, String img) {
+        this.campTitle = campTitle;
+        this.state = state;
+        this.city = city;
+        this.details = details;
+        this.img = img;
+    }
 }

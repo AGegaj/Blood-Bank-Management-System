@@ -1,7 +1,7 @@
 package org.fiek.bloodmanagementsystem.type;
 
 public enum Gender {
-    Male,
+    MALE,
 
-    Female;
+    FEMALE;
 }
