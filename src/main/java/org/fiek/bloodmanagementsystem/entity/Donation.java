@@ -42,4 +42,9 @@ public class Donation {
     @JoinColumn(name = "camp", referencedColumnName = "id", nullable = false)
     private Camp camp;
 
+    public Donation(Double quantity, String details) {
+        this.quantity = quantity;
+        this.details = details;
+
+    }
 }
