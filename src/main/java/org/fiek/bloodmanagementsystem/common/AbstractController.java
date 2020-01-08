@@ -3,9 +3,12 @@ package org.fiek.bloodmanagementsystem.common;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public abstract class AbstractController {
@@ -62,5 +65,26 @@ public abstract class AbstractController {
         }
 
         return responseEntity;
+    }
+
+
+    protected FieldErrorResultObject getFieldError(BindingResult bindingResult) {
+
+        FieldErrorResultObject resultObject = new FieldErrorResultObject();
+        resultObject.setStatus(ResponseStatus.FIELD_ERROR.getStatusCode());
+        resultObject.setResponseStatus(ResponseStatus.FIELD_ERROR);
+
+        List<FieldError> fieldsError = new ArrayList<>();
+
+        for (org.springframework.validation.FieldError fe : bindingResult.getFieldErrors()) {
+            FieldError fieldError = new FieldError();
+            fieldError.setField(fe.getField());
+            fieldError.setMessage(fe.getDefaultMessage());
+
+            fieldsError.add(fieldError);
+        }
+
+        resultObject.setFieldsError(fieldsError);
+        return resultObject;
     }
 }

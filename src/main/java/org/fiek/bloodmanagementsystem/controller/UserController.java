@@ -4,16 +4,21 @@ import org.fiek.bloodmanagementsystem.common.AbstractController;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
+import org.fiek.bloodmanagementsystem.model.RoleData;
 import org.fiek.bloodmanagementsystem.model.UserData;
 import org.fiek.bloodmanagementsystem.model.UserRegister;
 import org.fiek.bloodmanagementsystem.model.UserUpdate;
 import org.fiek.bloodmanagementsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
+@CrossOrigin
 @RestController
 @RequestMapping("bloodmanagement/user")
 public class UserController extends AbstractController {
@@ -23,8 +28,11 @@ public class UserController extends AbstractController {
 
 
     @PostMapping(value = "/create", consumes = "application/json")
-    public ResponseEntity<?> create(@RequestBody UserRegister userRegister, HttpServletRequest request){
+    public ResponseEntity<?> create(@RequestBody @Valid UserRegister userRegister, BindingResult bindingResult, HttpServletRequest request){
 
+        if (bindingResult.hasErrors()){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getFieldError(bindingResult));
+        }
         ResponseResult response =  userService.create(userRegister);
 
         return prepareResponse(response, request);
@@ -64,6 +72,14 @@ public class UserController extends AbstractController {
         ResponseResult response = userService.delete(id);
 
         return prepareResponse(response, request);
+    }
+
+
+    @GetMapping(value = "/role")
+    public ResponseEntity<?> getAllRole(HttpServletRequest request){
+        DataResultList<RoleData> resultList = userService.getRoles();
+
+        return prepareResponse(resultList, request);
     }
 
 }

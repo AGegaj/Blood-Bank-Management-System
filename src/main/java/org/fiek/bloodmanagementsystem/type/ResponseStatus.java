@@ -18,7 +18,9 @@ public enum ResponseStatus {
 
     CONFLICT(409, "Conflict"),
 
-    INTERNAL_SERVER_ERROR(500, "Internal Server Error");
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+
+    FIELD_ERROR(400, "Bad Request");
 
     @Getter
     private final int statusCode;

@@ -21,8 +21,6 @@ public class UserUpdate {
 
     private String email;
 
-    private String password;
-
     private String image;
 
     private String country;

@@ -1,11 +1,13 @@
 package org.fiek.bloodmanagementsystem.service;
 
+import org.fiek.bloodmanagementsystem.common.AbstractService;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.entity.DonatorDetails;
 import org.fiek.bloodmanagementsystem.entity.Role;
 import org.fiek.bloodmanagementsystem.entity.User;
+import org.fiek.bloodmanagementsystem.model.RoleData;
 import org.fiek.bloodmanagementsystem.model.UserData;
 import org.fiek.bloodmanagementsystem.model.UserRegister;
 import org.fiek.bloodmanagementsystem.model.UserUpdate;
@@ -14,6 +16,7 @@ import org.fiek.bloodmanagementsystem.repository.UserRepository;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.fiek.bloodmanagementsystem.type.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,13 +25,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService extends AbstractService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Value("${image.url}")
+    String imgUrl;
 
 
     public ResponseResult create(UserRegister userRegister) {
@@ -64,6 +70,11 @@ public class UserService {
             user.setStatus(Status.ACTIVE);
             //TODO encryptPassword()
             user.setPassword(userRegister.getPassword());
+
+            if(userRegister.getImage() != null){
+                user.setImage(writeImage(userRegister.getImage(), "users"));
+
+            }
             if (userRegister.getDonatorDetailsRegister() != null) {
                 user.setDonatorDetails(userRegister.getDonatorDetailsRegister().getDonatorDetails());
             }
@@ -78,6 +89,7 @@ public class UserService {
             result.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
             result.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
             result.setMessage(ResponseStatus.INTERNAL_SERVER_ERROR.getMsg());
+            System.err.println(e.getMessage());
         }
 
         return result;
@@ -89,29 +101,23 @@ public class UserService {
 
         result.setResponseStatus(ResponseStatus.BAD_REQUEST);
 
-        Optional<User> optionalUser = userRepository.findByEmail(userUpdate.getEmail());
-        if (optionalUser.isPresent()) {
-            result.setMessage("This email exists!");
-            return result;
-        }
+        Optional<User> optionalUser = userRepository.findById(userUpdate.getId());
 
-        optionalUser = userRepository.findByUsername(userUpdate.getUsername());
-        if (optionalUser.isPresent()) {
-            result.setMessage("This username exists!");
-            return result;
-        }
 
         try {
-            optionalUser = userRepository.findById(userUpdate.getId());
+
             User user = optionalUser.get();
             user.setFirstName(userUpdate.getFirstName());
             user.setLastName(userUpdate.getLastName());
             user.setUsername(userUpdate.getUsername());
             user.setEmail(userUpdate.getEmail());
-            user.setPassword(userUpdate.getPassword());
-            user.setImage(userUpdate.getImage());
             user.setCountry(userUpdate.getCountry());
             user.setCity(userUpdate.getCity());
+
+            if(userUpdate.getImage() != null){
+                user.setImage(writeImage(userUpdate.getImage(), "users"));
+
+            }
 
             if (userUpdate.getDonatorDetailsUpdate() != null) {
                 DonatorDetails donatorDetails = user.getDonatorDetails();
@@ -147,8 +153,9 @@ public class UserService {
                 return dataResult;
 
             User user = optionalUser.get();
+            String img = imgUrl + "users/" + user.getImage();
             UserData userData = new UserData(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(),
-                                            user.getEmail(), user.getCreatedTime(), user.getImage(), user.getCountry(),
+                                            user.getEmail(), user.getCreatedTime(), img, user.getCountry(),
                                             user.getCity(), user.getPersonalNumber(), user.getRole().getName());
             dataResult.setResponseStatus(ResponseStatus.OK);
             dataResult.setStatus(ResponseStatus.OK.getStatusCode());
@@ -213,6 +220,28 @@ public class UserService {
     }
 
 
+    public DataResultList<RoleData> getRoles(){
+        DataResultList<RoleData> roleDataDataResultList = new DataResultList<>();
+        roleDataDataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+        roleDataDataResultList.setResponseStatus(ResponseStatus.SUCCESS);
+
+        try{
+            List<Role> roles = roleRepository.findAll();
+            List<RoleData> roleDataList = new ArrayList<>();
+
+            for (Role r: roles) {
+                RoleData role = new RoleData(r.getId(), r.getName());
+                roleDataList.add(role);
+            }
+            roleDataDataResultList.setData(roleDataList);
+
+        } catch (Exception e){
+            roleDataDataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            roleDataDataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+        return roleDataDataResultList;
+    }
+
     private List<UserData> getUserList(List<User> users){
         List<UserData> userDataList = new ArrayList<>();
 
@@ -224,4 +253,6 @@ public class UserService {
         }
         return userDataList;
     }
+
+
 }
