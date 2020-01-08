@@ -1,16 +1,13 @@
 package org.fiek.bloodmanagementsystem.controller;
 
 import org.fiek.bloodmanagementsystem.common.AbstractController;
+import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
-import org.fiek.bloodmanagementsystem.model.CampRegister;
-import org.fiek.bloodmanagementsystem.model.DonationRegister;
+import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.service.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,4 +25,14 @@ public class DonationController extends AbstractController {
 
         return prepareResponse(response, request);
     }
+
+    @PostMapping(value = "/update", consumes = "application/json")
+    public ResponseEntity<?> updateDonation(@RequestBody DonationUpdate donationUpdate, HttpServletRequest request){
+
+        ResponseResult response = donationService.updateDonation(donationUpdate);
+
+        return prepareResponse(response, request);
+    }
+
+
 }

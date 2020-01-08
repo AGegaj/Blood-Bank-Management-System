@@ -1,10 +1,10 @@
 package org.fiek.bloodmanagementsystem.service;
 
+import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
-import org.fiek.bloodmanagementsystem.entity.Camp;
-import org.fiek.bloodmanagementsystem.entity.Donation;
-import org.fiek.bloodmanagementsystem.entity.User;
-import org.fiek.bloodmanagementsystem.model.DonationRegister;
+import org.fiek.bloodmanagementsystem.entity.*;
+import org.fiek.bloodmanagementsystem.model.*;
+import org.fiek.bloodmanagementsystem.repository.BloodGroupRepository;
 import org.fiek.bloodmanagementsystem.repository.CampRepository;
 import org.fiek.bloodmanagementsystem.repository.DonationRepository;
 import org.fiek.bloodmanagementsystem.repository.UserRepository;
@@ -27,6 +27,9 @@ public class DonationService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BloodGroupRepository bloodGroupRepository;
+
     public ResponseResult createDonation(DonationRegister donationRegister){
         ResponseResult responseResult = new ResponseResult();
 
@@ -44,13 +47,54 @@ public class DonationService {
             Optional<User> user = userRepository.findById(donationRegister.getUserId());
             donation.setUser(user.get());
 
+            Optional<BloodGroup> group = bloodGroupRepository.findById(donationRegister.getGroupId());
+            donation.setGroup(group.get());
+
             donationRepository.save(donation);
         } catch (Exception e){
+            System.err.println(e.getMessage());
             responseResult.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
             responseResult.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
             responseResult.setMessage(ResponseStatus.INTERNAL_SERVER_ERROR.getMsg());
         }
 
         return responseResult;
+    }
+
+    public ResponseResult updateDonation(DonationUpdate donationUpdate) {
+        ResponseResult result = new ResponseResult();
+
+        result.setResponseStatus(ResponseStatus.BAD_REQUEST);
+
+
+        Optional<Donation> donationOptional = donationRepository.findById(donationUpdate.getDonationId());
+
+        try {
+            Donation donation = donationOptional.get();
+            donation.setDetails(donationUpdate.getDetails());
+            donation.setQuantity(donationUpdate.getQuantity());
+
+            Optional<Camp> camp = campRepository.findById(donationUpdate.getCampId());
+            donation.setCamp(camp.get());
+
+            Optional<User> user = userRepository.findById(donationUpdate.getUserId());
+            donation.setUser(user.get());
+
+            Optional<BloodGroup> group = bloodGroupRepository.findById(donationUpdate.getGroupId());
+            donation.setGroup(group.get());
+
+            donationRepository.save(donation);
+
+            result.setResponseStatus(ResponseStatus.SUCCESS);
+            result.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+            result.setMessage(ResponseStatus.SUCCESS.getMsg());
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            result.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+            result.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            result.setMessage(ResponseStatus.INTERNAL_SERVER_ERROR.getMsg());
+        }
+        return result;
     }
 }
