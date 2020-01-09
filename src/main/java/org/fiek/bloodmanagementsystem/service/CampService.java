@@ -5,22 +5,16 @@ import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.entity.Camp;
-import org.fiek.bloodmanagementsystem.entity.DonatorDetails;
-import org.fiek.bloodmanagementsystem.entity.Role;
-import org.fiek.bloodmanagementsystem.entity.User;
 import org.fiek.bloodmanagementsystem.model.CampData;
 import org.fiek.bloodmanagementsystem.model.CampRegister;
 import org.fiek.bloodmanagementsystem.model.CampUpdate;
-import org.fiek.bloodmanagementsystem.model.UserData;
 import org.fiek.bloodmanagementsystem.repository.CampRepository;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
-import org.fiek.bloodmanagementsystem.type.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +54,7 @@ public class CampService extends AbstractService {
     public ResponseResult updateCmp(CampUpdate campUpdate){
         ResponseResult result = new ResponseResult();
 
-        result.setResponseStatus(ResponseStatus.BAD_REQUEST);
+        result.setResponseStatus(ResponseStatus.CONFLICT);
 
         Optional<Camp> optionalCamp = campRepository.findById(campUpdate.getCampId());
 

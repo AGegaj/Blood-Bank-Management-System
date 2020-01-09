@@ -1,6 +1,5 @@
 package org.fiek.bloodmanagementsystem.service;
 
-import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.entity.*;
 import org.fiek.bloodmanagementsystem.model.*;
@@ -63,7 +62,7 @@ public class DonationService {
     public ResponseResult updateDonation(DonationUpdate donationUpdate) {
         ResponseResult result = new ResponseResult();
 
-        result.setResponseStatus(ResponseStatus.BAD_REQUEST);
+        result.setResponseStatus(ResponseStatus.CONFLICT);
 
 
         Optional<Donation> donationOptional = donationRepository.findById(donationUpdate.getDonationId());

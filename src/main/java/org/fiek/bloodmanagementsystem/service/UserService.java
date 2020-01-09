@@ -41,8 +41,8 @@ public class UserService extends AbstractService {
 
     public ResponseResult create(UserRegister userRegister) {
         ResponseResult result = new ResponseResult();
-        result.setResponseStatus(ResponseStatus.BAD_REQUEST);
-        result.setStatus(ResponseStatus.BAD_REQUEST.getStatusCode());
+        result.setResponseStatus(ResponseStatus.CONFLICT);
+        result.setStatus(ResponseStatus.CONFLICT.getStatusCode());
 
         Optional<User> optionalUser = userRepository.findByUsername(userRegister.getUsername());
         if (optionalUser.isPresent()) {
@@ -106,7 +106,7 @@ public class UserService extends AbstractService {
     public ResponseResult update(UserUpdate userUpdate) {
         ResponseResult result = new ResponseResult();
 
-        result.setResponseStatus(ResponseStatus.BAD_REQUEST);
+        result.setResponseStatus(ResponseStatus.CONFLICT);
 
         Optional<User> optionalUser = userRepository.findById(userUpdate.getId());
 

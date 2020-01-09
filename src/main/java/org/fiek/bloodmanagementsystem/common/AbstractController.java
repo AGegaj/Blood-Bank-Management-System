@@ -27,7 +27,10 @@ public abstract class AbstractController {
         } else if (result.getResponseStatus() == ResponseStatus.BAD_REQUEST) {
             responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ErrorResponse(new Date(), result.getStatus(), "Bad Request", result.getMessage(), request.getRequestURI()));
-        } else {
+        } else if (result.getResponseStatus() == ResponseStatus.CONFLICT) {
+            responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    new ErrorResponse(new Date(), result.getStatus(), "CONFLICT", result.getMessage(), request.getRequestURI()));
+        }else {
             responseEntity = ResponseEntity.status(HttpStatus.CREATED).body(result);
         }
         return responseEntity;
