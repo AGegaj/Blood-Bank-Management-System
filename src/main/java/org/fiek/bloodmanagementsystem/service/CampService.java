@@ -1,5 +1,6 @@
 package org.fiek.bloodmanagementsystem.service;
 
+import org.fiek.bloodmanagementsystem.common.AbstractService;
 import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CampService {
+public class CampService extends AbstractService {
 
     @Autowired
     private CampRepository campRepository;
@@ -37,6 +38,10 @@ public class CampService {
 
         try {
             Camp camp = campRegister.getCamp();
+            if(campRegister.getImg() != null){
+                camp.setImg(writeImage(campRegister.getImg(), "camp"));
+
+            }
             campRepository.save(camp);
         } catch (Exception e){
             responseResult.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
@@ -60,7 +65,12 @@ public class CampService {
             camp.setState(campUpdate.getState());
             camp.setCity(campUpdate.getCity());
             camp.setDetails(campUpdate.getDetails());
-            camp.setImg(campUpdate.getImg());
+
+            if(campUpdate.getImg() != null){
+                camp.setImg(writeImage(campUpdate.getImg(), "camp"));
+
+            }
+
 
             campRepository.save(camp);
 

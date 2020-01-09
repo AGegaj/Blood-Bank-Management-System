@@ -9,6 +9,8 @@ import org.fiek.bloodmanagementsystem.entity.Camp;
 import org.fiek.bloodmanagementsystem.entity.Donation;
 import org.fiek.bloodmanagementsystem.entity.User;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @Getter
@@ -17,6 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class DonationRegister {
 
+    @NotBlank(message = "Must not be empty")
     private Double quantity;
 
     private String details;
