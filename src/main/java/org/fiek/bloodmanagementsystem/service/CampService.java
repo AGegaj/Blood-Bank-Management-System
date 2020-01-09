@@ -16,6 +16,7 @@ import org.fiek.bloodmanagementsystem.repository.CampRepository;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.fiek.bloodmanagementsystem.type.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +29,10 @@ public class CampService extends AbstractService {
 
     @Autowired
     private CampRepository campRepository;
+
+    @Value("${image.url}")
+    String imgUrl;
+
 
     public ResponseResult createCmp(CampRegister campRegister){
         ResponseResult responseResult = new ResponseResult();
@@ -90,6 +95,7 @@ public class CampService extends AbstractService {
         DataResult dataResult = new DataResult();
         dataResult.setResponseStatus(ResponseStatus.NOT_FOUND);
         dataResult.setStatus(ResponseStatus.NOT_FOUND.getStatusCode());
+        String image;
 
         try {
             Optional<Camp> optionalCamp = campRepository.findById(campId);
@@ -97,7 +103,11 @@ public class CampService extends AbstractService {
                 return dataResult;
 
             Camp camp = optionalCamp.get();
-            CampData campData = new CampData(camp.getId(), camp.getCampTitle(), camp.getState(), camp.getCity(), camp.getDetails(), camp.getImg());
+            if(camp.getImg() != null)
+                 image = imgUrl + "camp/" + camp.getImg();
+            else
+                 image = imgUrl + "camp/" + "noPhoto.png";
+            CampData campData = new CampData(camp.getId(), camp.getCampTitle(), camp.getState(), camp.getCity(), camp.getDetails(), image);
             dataResult.setResponseStatus(ResponseStatus.OK);
             dataResult.setStatus(ResponseStatus.OK.getStatusCode());
             dataResult.setData(campData);
@@ -128,9 +138,14 @@ public class CampService extends AbstractService {
 
     private List<CampData> getCampList(List<Camp> camps){
         List<CampData> campDataList = new ArrayList<>();
+        String image;
 
         for (Camp camp: camps){
-            CampData campData = new CampData(camp.getId(), camp.getCampTitle(), camp.getState(), camp.getCity(), camp.getDetails(),camp.getImg());
+            if(camp.getImg() != null)
+                image = imgUrl + "camp/" + camp.getImg();
+            else
+                image = imgUrl + "camp/" + "noPhoto.png";
+            CampData campData = new CampData(camp.getId(), camp.getCampTitle(), camp.getState(), camp.getCity(), camp.getDetails(),image);
             campDataList.add(campData);
         }
         return campDataList;
