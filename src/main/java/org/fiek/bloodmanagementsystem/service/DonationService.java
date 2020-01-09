@@ -1,12 +1,10 @@
 package org.fiek.bloodmanagementsystem.service;
 
+import org.fiek.bloodmanagementsystem.common.AbstractService;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.entity.*;
 import org.fiek.bloodmanagementsystem.model.*;
-import org.fiek.bloodmanagementsystem.repository.BloodGroupRepository;
-import org.fiek.bloodmanagementsystem.repository.CampRepository;
-import org.fiek.bloodmanagementsystem.repository.DonationRepository;
-import org.fiek.bloodmanagementsystem.repository.UserRepository;
+import org.fiek.bloodmanagementsystem.repository.*;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +13,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Service
-public class DonationService {
+public class DonationService extends AbstractService {
 
     @Autowired
     private CampRepository campRepository;
@@ -28,6 +26,9 @@ public class DonationService {
 
     @Autowired
     private BloodGroupRepository bloodGroupRepository;
+
+    @Autowired
+    private BloodBankRepository bloodBankRepository;
 
     public ResponseResult createDonation(DonationRegister donationRegister){
         ResponseResult responseResult = new ResponseResult();
@@ -49,6 +50,8 @@ public class DonationService {
             donation.setGroup(user.get().getDonatorDetails().getGroup());
 
             donationRepository.save(donation);
+            addBloodInBank(donationRegister.getQuantity(), user.get().getDonatorDetails().getGroup());
+
         } catch (Exception e){
             System.err.println(e.getMessage());
             responseResult.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
@@ -94,5 +97,17 @@ public class DonationService {
             result.setMessage(ResponseStatus.INTERNAL_SERVER_ERROR.getMsg());
         }
         return result;
+    }
+
+    protected void addBloodInBank(Double quantity, BloodGroup group) {
+        Optional<BloodBank> optionalBloodBank = bloodBankRepository.findByGroup(group);
+        if (optionalBloodBank.isPresent()) {
+            BloodBank bloodBank = optionalBloodBank.get();
+            bloodBank.setQuantity(bloodBank.getQuantity() + quantity);
+            bloodBankRepository.save(bloodBank);
+        } else{
+            BloodBank bloodBank = new BloodBank(quantity, group);
+            bloodBankRepository.save(bloodBank);
+        }
     }
 }

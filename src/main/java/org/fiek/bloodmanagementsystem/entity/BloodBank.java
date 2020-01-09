@@ -20,9 +20,14 @@ public class BloodBank {
     private Long id;
 
     @ManyToOne(targetEntity = BloodGroup.class)
-    @JoinColumn(name = "blood_group", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "blood_group", referencedColumnName = "id", nullable = false, unique = true)
     private BloodGroup group;
 
     @Column(name = "quantity", nullable = false)
     private Double quantity;
+
+    public BloodBank(double quantity, BloodGroup group){
+        this.quantity = quantity;
+        this.group = group;
+    }
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.fiek.bloodmanagementsystem.entity.Donation;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
 @Getter
@@ -16,7 +17,7 @@ import javax.validation.constraints.Positive;
 public class DonationRegister {
 
     @NotBlank(message = "Must not be empty")
-    @Positive(message = "Only numbers")
+    @Pattern(regexp = "^[0-9]$", message = "Only numbers!")
     private Double quantity;
 
     private String details;
