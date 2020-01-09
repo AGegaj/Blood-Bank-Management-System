@@ -36,6 +36,11 @@ public class DonatorDetails {
     @OneToOne(targetEntity = User.class, mappedBy = "donatorDetails", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
 
+
+    @ManyToOne(targetEntity = BloodGroup.class)
+    @JoinColumn(name = "blood_group", referencedColumnName = "id", nullable = false)
+    private BloodGroup group;
+
     public DonatorDetails(Double weigh, Gender gender, Integer age) {
         this.weigh = weigh;
         this.gender = gender;

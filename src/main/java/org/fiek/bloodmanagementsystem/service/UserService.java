@@ -4,13 +4,12 @@ import org.fiek.bloodmanagementsystem.common.AbstractService;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
+import org.fiek.bloodmanagementsystem.entity.BloodGroup;
 import org.fiek.bloodmanagementsystem.entity.DonatorDetails;
 import org.fiek.bloodmanagementsystem.entity.Role;
 import org.fiek.bloodmanagementsystem.entity.User;
-import org.fiek.bloodmanagementsystem.model.RoleData;
-import org.fiek.bloodmanagementsystem.model.UserData;
-import org.fiek.bloodmanagementsystem.model.UserRegister;
-import org.fiek.bloodmanagementsystem.model.UserUpdate;
+import org.fiek.bloodmanagementsystem.model.*;
+import org.fiek.bloodmanagementsystem.repository.BloodGroupRepository;
 import org.fiek.bloodmanagementsystem.repository.RoleRepository;
 import org.fiek.bloodmanagementsystem.repository.UserRepository;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
@@ -32,6 +31,9 @@ public class UserService extends AbstractService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private BloodGroupRepository bloodGroupRepository;
 
     @Value("${image.url}")
     String imgUrl;
@@ -64,6 +66,7 @@ public class UserService extends AbstractService {
             Optional<Role> optionalRole = roleRepository.findById(userRegister.getRoleId());
             Role role = optionalRole.get();
 
+
             User user = userRegister.getUser();
             user.setRole(role);
             user.setCreatedTime(new Date());
@@ -76,7 +79,11 @@ public class UserService extends AbstractService {
 
             }
             if (userRegister.getDonatorDetailsRegister() != null) {
-                user.setDonatorDetails(userRegister.getDonatorDetailsRegister().getDonatorDetails());
+                DonatorDetails donatorDetails = userRegister.getDonatorDetailsRegister().getDonatorDetails();
+                Optional<BloodGroup> bloodGroup = bloodGroupRepository.findById(userRegister.getDonatorDetailsRegister().getGroupId());
+                donatorDetails.setGroup(bloodGroup.get());
+                user.setDonatorDetails(donatorDetails);
+
             }
 
             userRepository.save(user);
@@ -175,7 +182,7 @@ public class UserService extends AbstractService {
         userDataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
 
         try{
-            Optional<List<User>> users = userRepository.findAllByRole("ADMIN");
+            Optional<List<User>> users = userRepository.findAllByRole("CLIENT");
             if(!users.isPresent()){
                 userDataResultList.setResponseStatus(ResponseStatus.NO_DATA);
                 userDataResultList.setStatus(ResponseStatus.NO_DATA.getStatusCode());
@@ -240,6 +247,29 @@ public class UserService extends AbstractService {
             roleDataDataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
         }
         return roleDataDataResultList;
+    }
+
+
+    public DataResultList<BloodGroupData> getBloodGroups(){
+        DataResultList<BloodGroupData> dataResultList = new DataResultList<>();
+        dataResultList.setResponseStatus(ResponseStatus.SUCCESS);
+        dataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+
+        try{
+            List<BloodGroup> groups = bloodGroupRepository.findAll();
+            List<BloodGroupData> bloodGroupDataList = new ArrayList<>();
+
+            for (BloodGroup gr: groups) {
+                BloodGroupData group = new BloodGroupData(gr.getId(), gr.getName());
+                bloodGroupDataList.add(group);
+            }
+            dataResultList.setData(bloodGroupDataList);
+
+        } catch (Exception e){
+            dataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            dataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+        return dataResultList;
     }
 
     private List<UserData> getUserList(List<User> users){

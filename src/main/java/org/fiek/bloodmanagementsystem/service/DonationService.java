@@ -47,8 +47,7 @@ public class DonationService {
             Optional<User> user = userRepository.findById(donationRegister.getUserId());
             donation.setUser(user.get());
 
-            Optional<BloodGroup> group = bloodGroupRepository.findById(donationRegister.getGroupId());
-            donation.setGroup(group.get());
+            donation.setGroup(user.get().getDonatorDetails().getGroup());
 
             donationRepository.save(donation);
         } catch (Exception e){

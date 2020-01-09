@@ -4,10 +4,7 @@ import org.fiek.bloodmanagementsystem.common.AbstractController;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
-import org.fiek.bloodmanagementsystem.model.RoleData;
-import org.fiek.bloodmanagementsystem.model.UserData;
-import org.fiek.bloodmanagementsystem.model.UserRegister;
-import org.fiek.bloodmanagementsystem.model.UserUpdate;
+import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,6 +78,13 @@ public class UserController extends AbstractController {
         DataResultList<RoleData> resultList = userService.getRoles();
 
         return prepareResponse(resultList, request);
+    }
+
+    @GetMapping(value = "/groups")
+    public ResponseEntity<?> getAllBloodGroup(HttpServletRequest request){
+        DataResultList<BloodGroupData> dataResult = userService.getBloodGroups();
+
+        return prepareResponse(dataResult, request);
     }
 
 }

@@ -26,6 +26,9 @@ public class BloodGroup {
     @OneToMany(targetEntity = Donation.class, mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Donation> donations;
 
+    @OneToMany(targetEntity = DonatorDetails.class, mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<DonatorDetails> users;
+
     @OneToMany(targetEntity = BloodBank.class, mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BloodBank> bloodBankList;
 
