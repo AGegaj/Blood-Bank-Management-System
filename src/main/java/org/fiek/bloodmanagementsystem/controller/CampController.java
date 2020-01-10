@@ -7,7 +7,6 @@ import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.model.CampData;
 import org.fiek.bloodmanagementsystem.model.CampRegister;
 import org.fiek.bloodmanagementsystem.model.CampUpdate;
-import org.fiek.bloodmanagementsystem.model.UserData;
 import org.fiek.bloodmanagementsystem.service.CampService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
