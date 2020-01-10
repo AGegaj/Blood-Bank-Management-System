@@ -13,9 +13,17 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserDonations {
 
-    private Date donatedDate;
+    private Long donationId;
+
+    private Date donationDate;
 
     private Double quantity;
+
+    private String details;
+
+    private Long groupId;
+
+    private Long campId;
 
     private String campTitle;
 
@@ -23,5 +31,11 @@ public class UserDonations {
 
     private String city;
 
-    private String details;
+    private String firstName;
+
+    private String lastName;
+
+    private String group;
+
+    private String personalNumber;
 }
