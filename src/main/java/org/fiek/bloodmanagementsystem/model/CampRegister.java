@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.fiek.bloodmanagementsystem.entity.Camp;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Getter

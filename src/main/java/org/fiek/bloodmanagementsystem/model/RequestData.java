@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.fiek.bloodmanagementsystem.type.RequestStatus;
 
 import java.util.Date;
 
@@ -28,5 +29,7 @@ public class RequestData {
     private String userEmail;
 
     private String personalNumber;
+
+    private RequestStatus status;
 
 }

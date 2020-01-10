@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.fiek.bloodmanagementsystem.type.RequestStatus;
+import org.fiek.bloodmanagementsystem.type.Status;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -31,4 +33,8 @@ public class Request {
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "user", referencedColumnName = "id", nullable = false)
     private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition = "ENUM('UNCONFIRMED','CONFIRMED')", nullable = false)
+    private RequestStatus status;
 }

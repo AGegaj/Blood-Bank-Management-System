@@ -7,10 +7,13 @@ import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.service.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @CrossOrigin
 @RestController
@@ -21,8 +24,11 @@ public class DonationController extends AbstractController {
     private DonationService donationService;
 
     @PostMapping(value = "/create", consumes = "application/json")
-    public ResponseEntity<?> createDonation(@RequestBody DonationRegister donationRegister, HttpServletRequest request){
+    public ResponseEntity<?> createDonation(@RequestBody @Valid DonationRegister donationRegister, BindingResult bindingResult, HttpServletRequest request){
 
+        if (bindingResult.hasErrors()){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getFieldError(bindingResult));
+        }
         ResponseResult response = donationService.createDonation(donationRegister);
 
         return prepareResponse(response, request);

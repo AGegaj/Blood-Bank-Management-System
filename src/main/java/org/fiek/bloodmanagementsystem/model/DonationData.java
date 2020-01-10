@@ -26,4 +26,18 @@ public class DonationData {
     private Long userId;
 
     private Long campId;
+
+    private String campTitle;
+
+    private String state;
+
+    private String city;
+
+    private String firstName;
+
+    private String lastName;
+
+    private String group;
+
+    private String personalNumber;
 }

@@ -9,10 +9,13 @@ import org.fiek.bloodmanagementsystem.model.CampRegister;
 import org.fiek.bloodmanagementsystem.model.CampUpdate;
 import org.fiek.bloodmanagementsystem.service.CampService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @CrossOrigin
 @RestController
@@ -23,7 +26,10 @@ public class CampController extends AbstractController {
     private CampService campService;
 
     @PostMapping(value = "/create", consumes = "application/json")
-    public ResponseEntity<?> createCamp(@RequestBody CampRegister campRegister, HttpServletRequest request){
+    public ResponseEntity<?> createCamp(@RequestBody @Valid CampRegister campRegister, BindingResult bindingResult, HttpServletRequest request){
+        if (bindingResult.hasErrors()){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getFieldError(bindingResult));
+        }
         ResponseResult response = campService.createCmp(campRegister);
 
         return prepareResponse(response, request);

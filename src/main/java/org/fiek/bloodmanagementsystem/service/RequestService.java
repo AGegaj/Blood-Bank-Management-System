@@ -9,6 +9,7 @@ import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.repository.BloodGroupRepository;
 import org.fiek.bloodmanagementsystem.repository.RequestRepository;
 import org.fiek.bloodmanagementsystem.repository.UserRepository;
+import org.fiek.bloodmanagementsystem.type.RequestStatus;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class RequestService extends AbstractService {
             request.setUser(user.get());
 
             request.setGroup(user.get().getDonatorDetails().getGroup());
+            request.setStatus(RequestStatus.UNCONFIRMED);
 
             requestRepository.save(request);
 
@@ -117,7 +119,7 @@ public class RequestService extends AbstractService {
 
         for (Request request: requests){
             RequestData requestData = new RequestData(request.getId(),request.getRequiredDate(),request.getGroup().getName(),
-                    request.getUser().getId(),request.getUser().getFirstName(),request.getUser().getLastName(),request.getUser().getEmail(),request.getUser().getPersonalNumber());
+                    request.getUser().getId(),request.getUser().getFirstName(),request.getUser().getLastName(),request.getUser().getEmail(),request.getUser().getPersonalNumber(), request.getStatus());
             requestDataList.add(requestData);
         }
         return requestDataList;

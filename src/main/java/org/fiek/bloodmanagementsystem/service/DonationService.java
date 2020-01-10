@@ -152,7 +152,9 @@ public class DonationService extends AbstractService {
 
         for (Donation donation: donations){
             DonationData donationData = new DonationData(donation.getId(),donation.getDonatedDate(),donation.getQuantity(),donation.getDetails(),
-                    donation.getGroup().getId(), donation.getUser().getId(), donation.getCamp().getId());
+                    donation.getGroup().getId(), donation.getUser().getId(), donation.getCamp().getId(), donation.getCamp().getCampTitle(),
+                    donation.getCamp().getState(), donation.getCamp().getCity(), donation.getUser().getFirstName(), donation.getUser().getLastName(),
+                    donation.getGroup().getName(), donation.getUser().getPersonalNumber());
             donationDataList.add(donationData);
         }
         return donationDataList;
