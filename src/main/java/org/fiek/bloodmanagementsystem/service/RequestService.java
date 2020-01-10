@@ -5,6 +5,8 @@ import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.entity.Request;
 import org.fiek.bloodmanagementsystem.entity.User;
+import org.fiek.bloodmanagementsystem.mail.MailService;
+import org.fiek.bloodmanagementsystem.mail.MailTemplate;
 import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.repository.BloodGroupRepository;
 import org.fiek.bloodmanagementsystem.repository.RequestRepository;
@@ -30,6 +32,9 @@ public class RequestService extends AbstractService {
 
     @Autowired
     private BloodGroupRepository bloodGroupRepository;
+
+    @Autowired
+    private MailService mailService;
 
     public ResponseResult createRequest(RequestRegister requestRegister){
         ResponseResult responseResult = new ResponseResult();
@@ -110,6 +115,38 @@ public class RequestService extends AbstractService {
             dataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);        }
 
         return dataResultList;
+    }
+
+    public ResponseResult confirmRequest(Long id){
+        ResponseResult responseResult = new ResponseResult();
+
+        responseResult.setMessage(ResponseStatus.SUCCESS.getMsg());
+        responseResult.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+        responseResult.setResponseStatus(ResponseStatus.SUCCESS);
+
+        try {
+            Optional<Request> optionalRequest = requestRepository.findById(id);
+            Request request = optionalRequest.get();
+            request.setStatus(RequestStatus.CONFIRMED);
+            requestRepository.save(request);
+
+            MailTemplate mailTemplate = new MailTemplate();
+            mailTemplate.setFrom("bloodonation@gmail.com");
+            mailTemplate.setTo(request.getUser().getEmail());
+            mailTemplate.setSubject("Confirmation Blood Request");
+            mailTemplate.setText("Hi " + request.getUser().getFirstName() + " " + request.getUser().getLastName() +
+                    ",\n\nYou recently requested for taking blood. \n\nYour request has been confirmed, so please come to our" +
+                    "Blood Bank as soon as you can. \n\nHope you get to feeling better soon!");
+            mailService.sendEmail(mailTemplate);
+
+        } catch (Exception e){
+            System.err.println(e.getMessage());
+            responseResult.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            responseResult.setMessage(ResponseStatus.INTERNAL_SERVER_ERROR.getMsg());
+            responseResult.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseResult;
     }
 
 

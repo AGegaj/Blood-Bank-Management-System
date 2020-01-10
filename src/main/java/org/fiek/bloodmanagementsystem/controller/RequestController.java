@@ -53,4 +53,11 @@ public class RequestController extends AbstractController {
         return prepareResponse(resultList, request);
     }
 
+    @GetMapping(value = "/confirm")
+    public ResponseEntity<?> confirm(@RequestParam("requestId") Long requestId, HttpServletRequest request){
+        ResponseResult responseResult = requestService.confirmRequest(requestId);
+
+        return prepareResponse(responseResult, request);
+    }
+
 }
