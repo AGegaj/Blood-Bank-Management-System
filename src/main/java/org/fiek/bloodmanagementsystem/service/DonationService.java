@@ -1,6 +1,7 @@
 package org.fiek.bloodmanagementsystem.service;
 
 import org.fiek.bloodmanagementsystem.common.AbstractService;
+import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.entity.*;
 import org.fiek.bloodmanagementsystem.model.*;
@@ -9,7 +10,9 @@ import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -97,6 +100,62 @@ public class DonationService extends AbstractService {
             result.setMessage(ResponseStatus.INTERNAL_SERVER_ERROR.getMsg());
         }
         return result;
+    }
+
+    public DataResultList<UserDonations> getAllByUser(Long userId){
+        DataResultList<UserDonations> dataResultList = new DataResultList<>();
+        dataResultList.setResponseStatus(ResponseStatus.SUCCESS);
+        dataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+
+        try {
+            List<Donation> donations = donationRepository.findAllByUserId(userId);
+
+            dataResultList.setData(getUserDonationList(donations));
+
+        } catch (Exception e) {
+            dataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            dataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);        }
+
+        return dataResultList;
+    }
+
+    public DataResultList<DonationData> getAllDonation(){
+        DataResultList<DonationData> donationDataResultList = new DataResultList<>();
+        donationDataResultList.setResponseStatus(ResponseStatus.SUCCESS);
+        donationDataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+
+        try{
+            List<Donation> donations = donationRepository.findAll();
+
+            donationDataResultList.setData(getAllDonationList(donations));
+
+        } catch (Exception e){
+            donationDataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            donationDataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+        return donationDataResultList;
+    }
+
+    private List<UserDonations> getUserDonationList(List<Donation> donations){
+        List<UserDonations> donationDataList = new ArrayList<>();
+
+        for (Donation donation: donations){
+            UserDonations donationData = new UserDonations(donation.getDonatedDate(),donation.getQuantity(),donation.getCamp().getCampTitle(),
+                    donation.getCamp().getState(), donation.getCamp().getState(), donation.getDetails());
+            donationDataList.add(donationData);
+        }
+        return donationDataList;
+    }
+
+    private List<DonationData> getAllDonationList(List<Donation> donations){
+        List<DonationData> donationDataList = new ArrayList<>();
+
+        for (Donation donation: donations){
+            DonationData donationData = new DonationData(donation.getId(),donation.getDonatedDate(),donation.getQuantity(),donation.getDetails(),
+                    donation.getGroup().getId(), donation.getUser().getId(), donation.getCamp().getId());
+            donationDataList.add(donationData);
+        }
+        return donationDataList;
     }
 
     protected void addBloodInBank(Double quantity, BloodGroup group) {

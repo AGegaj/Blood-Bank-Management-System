@@ -2,6 +2,7 @@ package org.fiek.bloodmanagementsystem.controller;
 
 import org.fiek.bloodmanagementsystem.common.AbstractController;
 import org.fiek.bloodmanagementsystem.common.DataResult;
+import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.service.DonationService;
@@ -33,6 +34,22 @@ public class DonationController extends AbstractController {
         ResponseResult response = donationService.updateDonation(donationUpdate);
 
         return prepareResponse(response, request);
+    }
+
+    @GetMapping(value = "/getAllByUserId", produces = "application/json")
+    public ResponseEntity<?> getAll(@RequestParam("userId") Long userId, HttpServletRequest request){
+
+        DataResultList<UserDonations> resultList = donationService.getAllByUser(userId);
+
+        return prepareResponse(resultList, request);
+    }
+
+    @GetMapping(value = "/getAll", produces = "application/json")
+    public ResponseEntity<?> getAll(HttpServletRequest request){
+
+        DataResultList<DonationData> resultList = donationService.getAllDonation();
+
+        return prepareResponse(resultList, request);
     }
 
 
