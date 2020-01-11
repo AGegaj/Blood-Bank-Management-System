@@ -7,7 +7,6 @@ import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -61,6 +60,14 @@ public class UserController extends AbstractController {
         DataResultList<DonatorData> resultList = userService.getAll();
 
         return prepareResponse(resultList, request);
+    }
+
+    @GetMapping(value = "/get-donator", produces = "application/json")
+    public ResponseEntity<?> getDonatorById(@RequestParam("id") Long id, HttpServletRequest request){
+
+        DataResult<DonatorData> data = userService.getDonatorById(id);
+
+        return prepareResponse(data, request);
     }
 
 

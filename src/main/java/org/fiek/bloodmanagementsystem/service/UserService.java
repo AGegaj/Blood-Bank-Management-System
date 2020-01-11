@@ -175,6 +175,33 @@ public class UserService extends AbstractService {
         return dataResult;
     }
 
+    public DataResult<DonatorData> getDonatorById(Long userId){
+        DataResult dataResult = new DataResult();
+        dataResult.setStatus(ResponseStatus.NOT_FOUND.getStatusCode());
+        dataResult.setResponseStatus(ResponseStatus.NOT_FOUND);
+
+        try {
+            Optional<User> optionalUser = userRepository.findById(userId);
+            if(!optionalUser.isPresent())
+                return dataResult;
+
+            User user = optionalUser.get();
+            String img = imgUrl + "users/" + user.getImage();
+            DonatorData donatorData = new DonatorData(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(),
+                    user.getEmail(), user.getCreatedTime(), img, user.getCountry(),
+                    user.getCity(), user.getPersonalNumber(), user.getRole().getName(),user.getDonatorDetails().getWeigh(),
+                    user.getDonatorDetails().getAge(), user.getDonatorDetails().getGroup().getName(), user.getDonatorDetails().getGender().name());
+            dataResult.setResponseStatus(ResponseStatus.OK);
+            dataResult.setStatus(ResponseStatus.OK.getStatusCode());
+            dataResult.setData(donatorData);
+
+        } catch (Exception e){
+            dataResult.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            dataResult.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+        return dataResult;
+    }
+
 
     public DataResultList<DonatorData> getAll(){
         DataResultList<DonatorData> userDataResultList = new DataResultList<>();
