@@ -176,19 +176,19 @@ public class UserService extends AbstractService {
     }
 
 
-    public DataResultList<UserData> getAll(){
-        DataResultList<UserData> userDataResultList = new DataResultList<>();
+    public DataResultList<DonatorData> getAll(){
+        DataResultList<DonatorData> userDataResultList = new DataResultList<>();
         userDataResultList.setResponseStatus(ResponseStatus.SUCCESS);
         userDataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
 
         try{
-            Optional<List<User>> users = userRepository.findAllByRole("CLIENT");
+            Optional<List<User>> users = userRepository.findAllByRoleAndStatus("CLIENT");
             if(!users.isPresent()){
                 userDataResultList.setResponseStatus(ResponseStatus.NO_DATA);
                 userDataResultList.setStatus(ResponseStatus.NO_DATA.getStatusCode());
                 return userDataResultList;
             }
-            userDataResultList.setData(getUserList(users.get()));
+            userDataResultList.setData(getDonatorList(users.get()));
 
         } catch (Exception e){
             userDataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
@@ -279,6 +279,19 @@ public class UserService extends AbstractService {
             UserData userData = new UserData(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(),
                     user.getEmail(), user.getCreatedTime(), user.getImage(), user.getCountry(),
                     user.getCity(), user.getPersonalNumber(), user.getRole().getName());
+            userDataList.add(userData);
+        }
+        return userDataList;
+    }
+
+    private List<DonatorData> getDonatorList(List<User> users){
+        List<DonatorData> userDataList = new ArrayList<>();
+
+        for (User user: users){
+            DonatorData userData = new DonatorData(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(),
+                    user.getEmail(), user.getCreatedTime(), user.getImage(), user.getCountry(),
+                    user.getCity(), user.getPersonalNumber(), user.getRole().getName(), user.getDonatorDetails().getWeigh(),
+                    user.getDonatorDetails().getAge(), user.getDonatorDetails().getGroup().getName(), user.getDonatorDetails().getGender().name());
             userDataList.add(userData);
         }
         return userDataList;

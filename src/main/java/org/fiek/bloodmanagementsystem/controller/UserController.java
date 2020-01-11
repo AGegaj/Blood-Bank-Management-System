@@ -58,13 +58,13 @@ public class UserController extends AbstractController {
     @GetMapping(value = "/getAll", produces = "application/json")
     public ResponseEntity<?> getAll(HttpServletRequest request){
 
-        DataResultList<UserData> resultList = userService.getAll();
+        DataResultList<DonatorData> resultList = userService.getAll();
 
         return prepareResponse(resultList, request);
     }
 
 
-    @PostMapping(value = "/delete")
+    @GetMapping(value = "/delete")
     public ResponseEntity<?> delete(@RequestParam("id") Long id, HttpServletRequest request){
 
         ResponseResult response = userService.delete(id);
