@@ -149,6 +149,36 @@ public class RequestService extends AbstractService {
         return responseResult;
     }
 
+    public ResponseResult deleteRequest(Long id){
+        ResponseResult responseResult = new ResponseResult();
+
+        responseResult.setMessage(ResponseStatus.SUCCESS.getMsg());
+        responseResult.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+        responseResult.setResponseStatus(ResponseStatus.SUCCESS);
+
+        try {
+            Optional<Request> optionalRequest = requestRepository.findById(id);
+            if(!optionalRequest.isPresent()){
+                responseResult.setResponseStatus(ResponseStatus.NOT_FOUND);
+                responseResult.setMessage(ResponseStatus.NOT_FOUND.getMsg());
+                responseResult.setStatus(ResponseStatus.NOT_FOUND.getStatusCode());
+
+                return responseResult;
+            }
+            Request request = optionalRequest.get();
+            requestRepository.delete(request);
+
+
+        } catch (Exception e){
+            System.err.println(e.getMessage());
+            responseResult.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            responseResult.setMessage(ResponseStatus.INTERNAL_SERVER_ERROR.getMsg());
+            responseResult.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseResult;
+    }
+
 
 
     private List<RequestData> getRequestList(List<Request> requests){

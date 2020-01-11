@@ -60,4 +60,11 @@ public class RequestController extends AbstractController {
         return prepareResponse(responseResult, request);
     }
 
+    @GetMapping(value = "/delete")
+    public ResponseEntity<?> delete(@RequestParam("requestId") Long requestId, HttpServletRequest request){
+        ResponseResult responseResult = requestService.deleteRequest(requestId);
+
+        return prepareResponse(responseResult, request);
+    }
+
 }
