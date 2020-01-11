@@ -1,19 +1,21 @@
 package org.fiek.bloodmanagementsystem.type;
 
 public enum Group {
-    APLUS,
+    OPLUS(1),
+    OMINUS(2),
+    APLUS(3),
+    AMINUS(4),
+    BPLUS(5),
+    BMINUS(6),
+    ABPLUS(7),
+    ABMINUS(8);
 
-    AMINUS,
 
-    BPLUS,
+    private final int type;
 
-    BMINUS,
+    Group(final int type) {
+        this.type = type;
+    }
 
-    OPLUS,
-
-    OMINUS,
-
-    ABPLUS,
-
-    ABMINUS;
+    public int fromCanonicalForm() { return type; }
 }
