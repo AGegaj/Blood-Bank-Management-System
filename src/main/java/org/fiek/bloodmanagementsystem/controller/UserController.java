@@ -94,4 +94,12 @@ public class UserController extends AbstractController {
         return prepareResponse(dataResult, request);
     }
 
+    @GetMapping(value = "/filter", produces = "application/json")
+    public ResponseEntity<?> getAll(@RequestBody FilterUserParameters filterUserParameters, HttpServletRequest request){
+
+        DataResultList<DonatorData> resultList = userService.filter(filterUserParameters);
+
+        return prepareResponse(resultList, request);
+    }
+
 }

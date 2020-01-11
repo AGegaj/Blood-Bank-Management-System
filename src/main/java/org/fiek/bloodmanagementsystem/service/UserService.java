@@ -12,10 +12,12 @@ import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.repository.BloodGroupRepository;
 import org.fiek.bloodmanagementsystem.repository.RoleRepository;
 import org.fiek.bloodmanagementsystem.repository.UserRepository;
+import org.fiek.bloodmanagementsystem.specification.*;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.fiek.bloodmanagementsystem.type.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -216,6 +218,29 @@ public class UserService extends AbstractService {
                 return userDataResultList;
             }
             userDataResultList.setData(getDonatorList(users.get()));
+
+        } catch (Exception e){
+            userDataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            userDataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+        return userDataResultList;
+    }
+
+    public DataResultList<DonatorData> filter(FilterUserParameters filterParameters){
+        DataResultList<DonatorData> userDataResultList = new DataResultList<>();
+        userDataResultList.setResponseStatus(ResponseStatus.SUCCESS);
+        userDataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+
+        try{
+            Optional<Role> role = roleRepository.findById(2L);
+            Specification<User> spec = Specification.where(new UserWithName(filterParameters.getFirstName()))
+                    .and(new UserWithLastName(filterParameters.getLastName()))
+                    .and(new UserWithPersonalNumber(filterParameters.getPersonalNumber()))
+                    .and(new UserWithCity(filterParameters.getCity())
+                    .and(new UserWithStatus("ACTIVE"))
+                    .and(new UserWithRole(role.get())));
+            List<User> users = userRepository.findAll(spec);
+            userDataResultList.setData(getDonatorList(users));
 
         } catch (Exception e){
             userDataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
