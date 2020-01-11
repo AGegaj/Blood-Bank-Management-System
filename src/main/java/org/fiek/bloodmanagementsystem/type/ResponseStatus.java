@@ -20,6 +20,8 @@ public enum ResponseStatus {
 
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
 
+    INVALID_REQUEST(422, "Invalid Request"),
+
     FIELD_ERROR(400, "Bad Request");
 
     @Getter

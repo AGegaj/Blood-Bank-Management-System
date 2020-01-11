@@ -1,11 +1,11 @@
 package org.fiek.bloodmanagementsystem.service;
 
-import org.fiek.bloodmanagementsystem.common.AbstractService;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.entity.*;
 import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.repository.*;
+import org.fiek.bloodmanagementsystem.type.Gender;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DonationService extends AbstractService {
+public class DonationService {
 
     @Autowired
     private CampRepository campRepository;
@@ -52,8 +52,46 @@ public class DonationService extends AbstractService {
 
             donation.setGroup(user.get().getDonatorDetails().getGroup());
 
-            donationRepository.save(donation);
-            addBloodInBank(donationRegister.getQuantity(), user.get().getDonatorDetails().getGroup());
+            List<Donation> donations = donationRepository.findAllByUserId(donationRegister.getUserId());
+
+            Donation lastUserDonation = null;
+
+            long difference = 0;
+            Date today = new Date();
+            float daysBetween = 0;
+
+            if(!donations.isEmpty()){
+                lastUserDonation = donationRepository.findLastDonationByUser(donationRegister.getUserId());
+                difference = today.getTime() - lastUserDonation.getDonatedDate().getTime();
+                daysBetween = (difference / (1000*60*60*24));
+            }
+
+            if(user.get().getDonatorDetails().getWeigh() >= 50 && user.get().getDonatorDetails().getWeigh() <= 160
+                    && user.get().getDonatorDetails().getAge() >= 17 && user.get().getDonatorDetails().getAge() <= 66){
+                if(lastUserDonation != null){
+                    if( (user.get().getDonatorDetails().getGender().equals(Gender.MALE) && daysBetween > 84) || (user.get().getDonatorDetails().getGender().equals(Gender.FEMALE) && daysBetween > 112)){
+                        donationRepository.save(donation);
+                        addBloodInBank(donationRegister.getQuantity(), user.get().getDonatorDetails().getGroup());
+                    } else {
+                        responseResult.setStatus(ResponseStatus.INVALID_REQUEST.getStatusCode());
+                        responseResult.setResponseStatus(ResponseStatus.INVALID_REQUEST);
+                        responseResult.setMessage("You can't donate because you have donated recently! " +
+                                                "Men can give blood every 12 weeks and women can give blood every 16 weeks.");
+                        return responseResult;
+                    }
+                } else {
+                    donationRepository.save(donation);
+                    addBloodInBank(donationRegister.getQuantity(), user.get().getDonatorDetails().getGroup());
+                }
+
+            } else {
+                responseResult.setStatus(ResponseStatus.INVALID_REQUEST.getStatusCode());
+                responseResult.setResponseStatus(ResponseStatus.INVALID_REQUEST);
+                responseResult.setMessage("You can give blood if you " +
+                        "weigh between  50kg and 160kg and " +
+                        "are aged between 17 and 66 ");
+                return responseResult;
+            }
 
         } catch (Exception e){
             System.err.println(e.getMessage());
@@ -114,7 +152,9 @@ public class DonationService extends AbstractService {
 
         } catch (Exception e) {
             dataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
-            dataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);        }
+            dataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+            System.err.println(e.getMessage());
+        }
 
         return dataResultList;
     }
