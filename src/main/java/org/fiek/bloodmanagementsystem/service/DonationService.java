@@ -1,13 +1,19 @@
 package org.fiek.bloodmanagementsystem.service;
 
+import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.entity.*;
 import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.repository.*;
+import org.fiek.bloodmanagementsystem.specification.DonationWithCity;
+import org.fiek.bloodmanagementsystem.specification.DonationWithLastName;
+import org.fiek.bloodmanagementsystem.specification.DonationWithName;
+import org.fiek.bloodmanagementsystem.specification.DonationWithPersonalNumber;
 import org.fiek.bloodmanagementsystem.type.Gender;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -138,6 +144,30 @@ public class DonationService {
             result.setMessage(ResponseStatus.INTERNAL_SERVER_ERROR.getMsg());
         }
         return result;
+    }
+
+    public DataResultList<DonationData> filter(FilterUserParameters filterUserParameters){
+        DataResultList<DonationData> donationDataResultList = new DataResultList<>();
+
+        donationDataResultList.setResponseStatus(ResponseStatus.SUCCESS);
+        donationDataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+
+        try {
+            Specification<Donation> spec = Specification.where(new DonationWithName(filterUserParameters.getFirstName())
+            .and(new DonationWithLastName(filterUserParameters.getLastName()))
+            .and(new DonationWithPersonalNumber(filterUserParameters.getPersonalNumber()))
+            .and(new DonationWithCity(filterUserParameters.getCity())));
+
+            List<Donation> donations = donationRepository.findAll(spec);
+
+            donationDataResultList.setData(getAllDonationList(donations));
+
+        }catch (Exception e){
+            donationDataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            donationDataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return donationDataResultList;
     }
 
     public DataResultList<UserDonations> getAllByUser(Long userId){

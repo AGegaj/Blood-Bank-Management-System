@@ -1,7 +1,6 @@
 package org.fiek.bloodmanagementsystem.controller;
 
 import org.fiek.bloodmanagementsystem.common.AbstractController;
-import org.fiek.bloodmanagementsystem.common.DataResult;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.model.*;
@@ -54,6 +53,14 @@ public class DonationController extends AbstractController {
     public ResponseEntity<?> getAll(HttpServletRequest request){
 
         DataResultList<DonationData> resultList = donationService.getAllDonation();
+
+        return prepareResponse(resultList, request);
+    }
+
+    @PostMapping(value = "/filter", produces = "application/json")
+    public ResponseEntity<?> getAll(@RequestBody FilterUserParameters filterUserParameters, HttpServletRequest request){
+
+        DataResultList<DonationData> resultList = donationService.filter(filterUserParameters);
 
         return prepareResponse(resultList, request);
     }
