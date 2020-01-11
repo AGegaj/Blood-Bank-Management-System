@@ -13,10 +13,12 @@ import org.fiek.bloodmanagementsystem.model.*;
 import org.fiek.bloodmanagementsystem.repository.BloodBankRepository;
 import org.fiek.bloodmanagementsystem.repository.RequestRepository;
 import org.fiek.bloodmanagementsystem.repository.UserRepository;
+import org.fiek.bloodmanagementsystem.specification.*;
 import org.fiek.bloodmanagementsystem.type.Group;
 import org.fiek.bloodmanagementsystem.type.RequestStatus;
 import org.fiek.bloodmanagementsystem.type.ResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -76,6 +78,25 @@ public class RequestService {
 
         try{
             List<Request> requests = requestRepository.findAll();
+
+            campDataResultList.setData(getRequestList(requests));
+
+        } catch (Exception e){
+            campDataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            campDataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+        return campDataResultList;
+    }
+
+    public DataResultList<RequestData> filterByStatus(String status){
+        DataResultList<RequestData> campDataResultList = new DataResultList<>();
+        campDataResultList.setResponseStatus(ResponseStatus.SUCCESS);
+        campDataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+
+        try{
+            RequestStatus requestStatus = RequestStatus.getStatus(status.toUpperCase());
+            Specification<Request> spec = Specification.where(new RequestWithStatus(requestStatus));
+            List<Request> requests = requestRepository.findAll(spec);
 
             campDataResultList.setData(getRequestList(requests));
 

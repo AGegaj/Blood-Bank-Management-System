@@ -8,6 +8,7 @@ import org.fiek.bloodmanagementsystem.model.RequestData;
 import org.fiek.bloodmanagementsystem.model.RequestRegister;
 import org.fiek.bloodmanagementsystem.model.UserRequest;
 import org.fiek.bloodmanagementsystem.service.RequestService;
+import org.fiek.bloodmanagementsystem.type.RequestStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,14 @@ public class RequestController extends AbstractController {
     public ResponseEntity<?> getAll(HttpServletRequest request){
 
         DataResultList<RequestData> resultList = requestService.getAllRequest();
+
+        return prepareResponse(resultList, request);
+    }
+
+    @GetMapping(value = "/filter-request", produces = "application/json")
+    public ResponseEntity<?> filterByStatus(@RequestParam("status") String status, HttpServletRequest request){
+
+        DataResultList<RequestData> resultList = requestService.filterByStatus(status);
 
         return prepareResponse(resultList, request);
     }
