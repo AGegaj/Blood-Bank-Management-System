@@ -230,14 +230,36 @@ public class RequestService {
 
         double quantity = 0;
 
+        List<BloodBank> bloodBankOminus = new ArrayList<>();
+        List<BloodBank> bloodBankOplus = new ArrayList<>();
+        List<BloodBank> bloodBankAminus = new ArrayList<>();
+        List<BloodBank> bloodBankAplus = new ArrayList<>();
+        List<BloodBank> bloodBankBminus = new ArrayList<>();
+        List<BloodBank> bloodBankBplus = new ArrayList<>();
+        List<BloodBank> bloodBankABminus = new ArrayList<>();
+        List<BloodBank> bloodBankABplus = new ArrayList<>();
+
         List<BloodBank> getAllBlood = bloodBankRepository.findAll();
-        List<BloodBank> bloodBankOminus = bloodBankRepository.findByGroup(Group.OMINUS.fromCanonicalForm());
-        List<BloodBank> bloodBankOplus = bloodBankRepository.findByGroup(Group.OPLUS.fromCanonicalForm());
-        List<BloodBank> bloodBankAminus = bloodBankRepository.findByGroup(Group.AMINUS.fromCanonicalForm());
-        List<BloodBank> bloodBankAplus = bloodBankRepository.findByGroup(Group.APLUS.fromCanonicalForm());
-        List<BloodBank> bloodBankBminus = bloodBankRepository.findByGroup(Group.BMINUS.fromCanonicalForm());
-        List<BloodBank> bloodBankBplus = bloodBankRepository.findByGroup(Group.BPLUS.fromCanonicalForm());
-        List<BloodBank> bloodBankABminus = bloodBankRepository.findByGroup(Group.ABMINUS.fromCanonicalForm());
+
+        for (BloodBank bloodBank: getAllBlood){
+            if(bloodBank.getGroup().getId() == Group.OMINUS.fromCanonicalForm())
+                bloodBankOminus.add(bloodBank);
+            else if(bloodBank.getGroup().getId() == Group.OPLUS.fromCanonicalForm())
+                bloodBankOplus.add(bloodBank);
+            else if(bloodBank.getGroup().getId() == Group.AMINUS.fromCanonicalForm())
+                bloodBankAminus.add(bloodBank);
+            else if(bloodBank.getGroup().getId() == Group.APLUS.fromCanonicalForm())
+                bloodBankAplus.add(bloodBank);
+            else if(bloodBank.getGroup().getId() == Group.BMINUS.fromCanonicalForm())
+                bloodBankBminus.add(bloodBank);
+            else if(bloodBank.getGroup().getId() == Group.BPLUS.fromCanonicalForm())
+                bloodBankBplus.add(bloodBank);
+            else if(bloodBank.getGroup().getId() == Group.ABMINUS.fromCanonicalForm())
+                bloodBankABminus.add(bloodBank);
+            else
+                bloodBankABplus.add(bloodBank);
+
+        }
 
         switch (request.getGroup().getName()){
             case "0+":
