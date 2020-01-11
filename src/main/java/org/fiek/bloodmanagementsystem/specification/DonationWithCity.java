@@ -23,5 +23,5 @@ public class DonationWithCity implements Specification<Donation> {
         if (city == null) {
             return null;
         }
-        return criteriaBuilder.like(root.get("user").get("city"), "%"+ this.city +"%");    }
+        return criteriaBuilder.like(root.get("camp").get("city"), "%"+ this.city +"%");    }
 }
