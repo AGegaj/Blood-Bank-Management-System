@@ -111,7 +111,6 @@ public class UserService extends AbstractService {
 
         Optional<User> optionalUser = userRepository.findById(userUpdate.getId());
 
-
         try {
 
             User user = optionalUser.get();
@@ -147,6 +146,35 @@ public class UserService extends AbstractService {
         }
 
         return result;
+    }
+
+    public ResponseResult updatePassword(PasswordUpdate passwordUpdate){
+        ResponseResult result = new ResponseResult();
+
+        result.setResponseStatus(ResponseStatus.CONFLICT);
+
+        Optional<User> optionalUser = userRepository.findById(passwordUpdate.getId());
+
+        try {
+
+            User user = optionalUser.get();
+
+            user.setPassword(encryptPassword(passwordUpdate.getPassword()));
+            userRepository.save(user);
+
+            result.setResponseStatus(ResponseStatus.SUCCESS);
+            result.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+            result.setMessage(ResponseStatus.SUCCESS.getMsg());
+
+
+        } catch (Exception e){
+            result.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+            result.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            result.setMessage(ResponseStatus.INTERNAL_SERVER_ERROR.getMsg());
+        }
+
+        return result;
+
     }
 
 

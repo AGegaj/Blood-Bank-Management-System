@@ -44,6 +44,16 @@ public class UserController extends AbstractController {
         return prepareResponse(response, request);
     }
 
+    @PostMapping(value = "/update-password", consumes = "application/json")
+    public ResponseEntity<?> updatePassword(@RequestBody @Valid  PasswordUpdate passwordUpdate, BindingResult bindingResult, HttpServletRequest request){
+
+        if (bindingResult.hasErrors()){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getFieldError(bindingResult));
+        }
+        ResponseResult response =  userService.updatePassword(passwordUpdate);
+
+        return prepareResponse(response, request);
+    }
 
     //TODO Authorize only for administrator
     @GetMapping(value = "/get", produces = "application/json")

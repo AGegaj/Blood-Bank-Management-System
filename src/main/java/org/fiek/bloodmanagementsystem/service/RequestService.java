@@ -1,10 +1,8 @@
 package org.fiek.bloodmanagementsystem.service;
 
-import org.fiek.bloodmanagementsystem.common.AbstractService;
 import org.fiek.bloodmanagementsystem.common.DataResultList;
 import org.fiek.bloodmanagementsystem.common.ResponseResult;
 import org.fiek.bloodmanagementsystem.entity.BloodBank;
-import org.fiek.bloodmanagementsystem.entity.BloodGroup;
 import org.fiek.bloodmanagementsystem.entity.Request;
 import org.fiek.bloodmanagementsystem.entity.User;
 import org.fiek.bloodmanagementsystem.mail.MailService;
