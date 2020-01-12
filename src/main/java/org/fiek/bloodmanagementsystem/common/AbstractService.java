@@ -1,6 +1,7 @@
 package org.fiek.bloodmanagementsystem.common;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
@@ -36,5 +37,9 @@ public abstract class AbstractService {
         }
 
         return name;
+    }
+
+    protected final String encryptPassword(String password) {
+        return new BCryptPasswordEncoder().encode(password);
     }
 }

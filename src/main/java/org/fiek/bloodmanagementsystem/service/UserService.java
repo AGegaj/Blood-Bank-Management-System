@@ -73,8 +73,7 @@ public class UserService extends AbstractService {
             user.setRole(role);
             user.setCreatedTime(new Date());
             user.setStatus(Status.ACTIVE);
-            //TODO encryptPassword()
-            user.setPassword(userRegister.getPassword());
+            user.setPassword(encryptPassword(userRegister.getPassword()));
 
             if(userRegister.getImage() != null){
                 user.setImage(writeImage(userRegister.getImage(), "users"));

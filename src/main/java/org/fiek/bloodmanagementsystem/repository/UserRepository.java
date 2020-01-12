@@ -20,5 +20,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.role.name = :role AND u.status = 'ACTIVE'")
     Optional<List<User>> findAllByRoleAndStatus(@Param("role") String role);
 
+
+    @Query("SELECT u FROM User u WHERE u.username = :username or u.email = :username")
+    Optional<User> findByUsernameOrEmail(@Param("username") String username);
+
     List<User> findAll(Specification<User> spec);
 }
