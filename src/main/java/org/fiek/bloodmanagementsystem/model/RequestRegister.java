@@ -11,7 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RequestRegister {
 
-    private Long groupId;
-
     private Long userId;
 }

@@ -9,6 +9,7 @@ import org.fiek.bloodmanagementsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class UserController extends AbstractController {
     private UserService userService;
 
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/create", consumes = "application/json")
     public ResponseEntity<?> create(@RequestBody @Valid UserRegister userRegister, BindingResult bindingResult, HttpServletRequest request){
 
@@ -36,6 +38,7 @@ public class UserController extends AbstractController {
     }
 
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/update", consumes = "application/json")
     public ResponseEntity<?> update(@RequestBody UserUpdate userUpdate, HttpServletRequest request){
 
@@ -55,7 +58,7 @@ public class UserController extends AbstractController {
         return prepareResponse(response, request);
     }
 
-    //TODO Authorize only for administrator
+
     @GetMapping(value = "/get", produces = "application/json")
     public ResponseEntity<?> getById(@RequestParam("userId") Long userId, HttpServletRequest request){
         DataResult<UserData> result = userService.getById(userId);
@@ -64,6 +67,7 @@ public class UserController extends AbstractController {
     }
 
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/getAll", produces = "application/json")
     public ResponseEntity<?> getAll(HttpServletRequest request){
 
@@ -81,6 +85,7 @@ public class UserController extends AbstractController {
     }
 
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/delete")
     public ResponseEntity<?> delete(@RequestParam("id") Long id, HttpServletRequest request){
 

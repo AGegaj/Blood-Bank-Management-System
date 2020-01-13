@@ -11,6 +11,7 @@ import org.fiek.bloodmanagementsystem.service.CampService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class CampController extends AbstractController {
     @Autowired
     private CampService campService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/create", consumes = "application/json")
     public ResponseEntity<?> createCamp(@RequestBody @Valid CampRegister campRegister, BindingResult bindingResult, HttpServletRequest request){
         if (bindingResult.hasErrors()){
@@ -35,6 +37,7 @@ public class CampController extends AbstractController {
         return prepareResponse(response, request);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/update", consumes = "application/json")
     public ResponseEntity<?> updateCamp(@RequestBody CampUpdate campUpdate,  HttpServletRequest request){
 
@@ -50,6 +53,7 @@ public class CampController extends AbstractController {
         return prepareResponse(result, request);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/getAll", produces = "application/json")
     public ResponseEntity<?> getAll(HttpServletRequest request){
 

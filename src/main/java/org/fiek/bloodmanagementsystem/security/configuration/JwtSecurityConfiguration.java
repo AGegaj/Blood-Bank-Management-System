@@ -57,7 +57,6 @@ public class JwtSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         "/index",
-                        "/**", // Delete this star *
                         "/bloodmanagement/intermanagement/user/reset-password",
                         "/bloodmanagement/intermanagement/user/change-password",
                         "/bloodmanagement/intermanagement/user/validate-code",

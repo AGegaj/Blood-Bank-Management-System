@@ -150,6 +150,10 @@ public class RequestService {
                 responseResult.setMessage(ResponseStatus.SUCCESS.getMsg());
                 responseResult.setStatus(ResponseStatus.SUCCESS.getStatusCode());
                 responseResult.setResponseStatus(ResponseStatus.SUCCESS);
+                Optional<BloodBank> optionalBloodBank = bloodBankRepository.findByGroup(request.getGroup());
+                BloodBank bloodBank = optionalBloodBank.get();
+                bloodBank.setQuantity(bloodBank.getQuantity() - 350);
+                bloodBankRepository.save(bloodBank);
 
                 request.setStatus(RequestStatus.CONFIRMED);
                 requestRepository.save(request);
@@ -228,7 +232,7 @@ public class RequestService {
         List<UserRequest> requestDataList = new ArrayList<>();
 
         for (Request request: requests){
-            UserRequest requestData = new UserRequest(request.getId(), request.getRequiredDate(), request.getGroup().getName());
+            UserRequest requestData = new UserRequest(request.getId(), request.getRequiredDate(), request.getGroup().getName(), request.getStatus().name());
             requestDataList.add(requestData);
         }
         return requestDataList;

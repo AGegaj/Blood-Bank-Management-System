@@ -11,6 +11,7 @@ import org.fiek.bloodmanagementsystem.service.RequestService;
 import org.fiek.bloodmanagementsystem.type.RequestStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +63,7 @@ public class RequestController extends AbstractController {
         return prepareResponse(resultList, request);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/confirm")
     public ResponseEntity<?> confirm(@RequestParam("requestId") Long requestId, HttpServletRequest request){
         ResponseResult responseResult = requestService.confirmRequest(requestId);
@@ -69,6 +71,7 @@ public class RequestController extends AbstractController {
         return prepareResponse(responseResult, request);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/delete")
     public ResponseEntity<?> delete(@RequestParam("requestId") Long requestId, HttpServletRequest request){
         ResponseResult responseResult = requestService.deleteRequest(requestId);

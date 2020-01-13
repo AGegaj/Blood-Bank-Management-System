@@ -15,4 +15,6 @@ public class UserRequest {
     private Date requiredDate;
 
     private String bloodGroup;
+
+    private String status;
 }

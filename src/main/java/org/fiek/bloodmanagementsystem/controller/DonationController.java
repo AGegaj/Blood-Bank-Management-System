@@ -8,6 +8,7 @@ import org.fiek.bloodmanagementsystem.service.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class DonationController extends AbstractController {
     @Autowired
     private DonationService donationService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/create", consumes = "application/json")
     public ResponseEntity<?> createDonation(@RequestBody @Valid DonationRegister donationRegister, BindingResult bindingResult, HttpServletRequest request){
 
@@ -33,6 +35,7 @@ public class DonationController extends AbstractController {
         return prepareResponse(response, request);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/update", consumes = "application/json")
     public ResponseEntity<?> updateDonation(@RequestBody DonationUpdate donationUpdate, HttpServletRequest request){
 
@@ -49,6 +52,7 @@ public class DonationController extends AbstractController {
         return prepareResponse(resultList, request);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/getAll", produces = "application/json")
     public ResponseEntity<?> getAll(HttpServletRequest request){
 
