@@ -232,7 +232,9 @@ public class RequestService {
         List<UserRequest> requestDataList = new ArrayList<>();
 
         for (Request request: requests){
-            UserRequest requestData = new UserRequest(request.getId(), request.getRequiredDate(), request.getGroup().getName(), request.getStatus().name());
+
+            UserRequest requestData = new UserRequest(request.getRequiredDate(), request.getGroup().getName(), request.getStatus().name());
+
             requestDataList.add(requestData);
         }
         return requestDataList;
