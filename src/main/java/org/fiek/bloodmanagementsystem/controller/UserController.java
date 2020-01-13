@@ -38,7 +38,6 @@ public class UserController extends AbstractController {
     }
 
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/update", consumes = "application/json")
     public ResponseEntity<?> update(@RequestBody UserUpdate userUpdate, HttpServletRequest request){
 
