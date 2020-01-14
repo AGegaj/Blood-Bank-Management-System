@@ -109,9 +109,23 @@ public class UserService extends AbstractService {
 
         result.setResponseStatus(ResponseStatus.CONFLICT);
 
-        Optional<User> optionalUser = userRepository.findById(userUpdate.getId());
 
         try {
+            Optional<User> userOptional = userRepository.findByUsername(userUpdate.getUsername());
+
+            if (userOptional.isPresent()) {
+                result.setMessage("This username exists!");
+                return result;
+            }
+
+            userOptional = userRepository.findByEmail(userUpdate.getEmail());
+            if (userOptional.isPresent()) {
+                result.setMessage("This email exists!");
+                return result;
+            }
+
+
+            Optional<User> optionalUser = userRepository.findById(userUpdate.getId());
 
             User user = optionalUser.get();
             user.setFirstName(userUpdate.getFirstName());
