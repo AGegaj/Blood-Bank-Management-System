@@ -23,7 +23,7 @@ public class DonatorData {
 
     private String email;
 
-    private Date createdDate;
+    private String createdDate;
 
     private String image;
 

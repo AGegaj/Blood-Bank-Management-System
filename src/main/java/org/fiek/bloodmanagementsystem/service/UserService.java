@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -111,27 +113,12 @@ public class UserService extends AbstractService {
 
 
         try {
-            Optional<User> userOptional = userRepository.findByUsername(userUpdate.getUsername());
-
-            if (userOptional.isPresent()) {
-                result.setMessage("This username exists!");
-                return result;
-            }
-
-            userOptional = userRepository.findByEmail(userUpdate.getEmail());
-            if (userOptional.isPresent()) {
-                result.setMessage("This email exists!");
-                return result;
-            }
-
 
             Optional<User> optionalUser = userRepository.findById(userUpdate.getId());
 
             User user = optionalUser.get();
             user.setFirstName(userUpdate.getFirstName());
             user.setLastName(userUpdate.getLastName());
-            user.setUsername(userUpdate.getUsername());
-            user.setEmail(userUpdate.getEmail());
             user.setCountry(userUpdate.getCountry());
             user.setCity(userUpdate.getCity());
 
@@ -231,7 +218,7 @@ public class UserService extends AbstractService {
             User user = optionalUser.get();
             String img = imgUrl + "users/" + user.getImage();
             DonatorData donatorData = new DonatorData(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(),
-                    user.getEmail(), user.getCreatedTime(), img, user.getCountry(),
+                    user.getEmail(), user.getCreatedTime().toString(), img, user.getCountry(),
                     user.getCity(), user.getPersonalNumber(), user.getRole().getName(),user.getDonatorDetails().getWeigh(),
                     user.getDonatorDetails().getAge(), user.getDonatorDetails().getGroup().getName(), user.getDonatorDetails().getGender().name());
             dataResult.setResponseStatus(ResponseStatus.OK);
@@ -377,12 +364,15 @@ public class UserService extends AbstractService {
         return userDataList;
     }
 
-    private List<DonatorData> getDonatorList(List<User> users){
+    private List<DonatorData> getDonatorList(List<User> users) throws ParseException {
         List<DonatorData> userDataList = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+
 
         for (User user: users){
+            String dateString = format.format(  user.getCreatedTime());
             DonatorData userData = new DonatorData(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(),
-                    user.getEmail(), user.getCreatedTime(), user.getImage(), user.getCountry(),
+                    user.getEmail(), dateString, user.getImage(), user.getCountry(),
                     user.getCity(), user.getPersonalNumber(), user.getRole().getName(), user.getDonatorDetails().getWeigh(),
                     user.getDonatorDetails().getAge(), user.getDonatorDetails().getGroup().getName(), user.getDonatorDetails().getGender().name());
             userDataList.add(userData);
