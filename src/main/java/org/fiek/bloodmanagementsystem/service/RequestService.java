@@ -112,8 +112,9 @@ public class RequestService {
 
         try{
             RequestStatus requestStatus = RequestStatus.getStatus(status.toUpperCase());
-            Specification<Request> spec = Specification.where(new RequestWithStatus(requestStatus));
-            List<Request> requests = requestRepository.findAllByUserIdandStatus(userId, requestStatus);
+            Specification<Request> spec = Specification.where(new RequestWithStatus(requestStatus))
+                                                               .and(new RequestWithUserId(userId));
+            List<Request> requests = requestRepository.findAll(spec);
 
             campDataResultList.setData(getRequestList(requests));
 
