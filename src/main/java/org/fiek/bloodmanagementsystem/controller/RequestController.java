@@ -47,6 +47,15 @@ public class RequestController extends AbstractController {
         return prepareResponse(resultList, request);
     }
 
+    @GetMapping(value = "/filter-request-userId", produces = "application/json")
+    public ResponseEntity<?> filterByStatus(@RequestParam("status") String status, @RequestParam("userId") Long userId,  HttpServletRequest request){
+
+        DataResultList<RequestData> resultList = requestService.filterByStatusUser(userId, status);
+
+        return prepareResponse(resultList, request);
+    }
+
+
     @GetMapping(value = "/getAllByUserId", produces = "application/json")
     public ResponseEntity<?> getAllByUserId(@RequestParam("userId") Long userId, HttpServletRequest request){
 

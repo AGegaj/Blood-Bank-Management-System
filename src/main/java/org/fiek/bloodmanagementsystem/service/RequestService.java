@@ -105,6 +105,25 @@ public class RequestService {
         return campDataResultList;
     }
 
+    public DataResultList<RequestData> filterByStatusUser(Long userId, String status){
+        DataResultList<RequestData> campDataResultList = new DataResultList<>();
+        campDataResultList.setResponseStatus(ResponseStatus.SUCCESS);
+        campDataResultList.setStatus(ResponseStatus.SUCCESS.getStatusCode());
+
+        try{
+            RequestStatus requestStatus = RequestStatus.getStatus(status.toUpperCase());
+            Specification<Request> spec = Specification.where(new RequestWithStatus(requestStatus));
+            List<Request> requests = requestRepository.findAllByUserIdandStatus(userId, requestStatus);
+
+            campDataResultList.setData(getRequestList(requests));
+
+        } catch (Exception e){
+            campDataResultList.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR.getStatusCode());
+            campDataResultList.setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+        return campDataResultList;
+    }
+
     public DataResultList<UserRequest> getAllRequestByUser(Long userId){
         DataResultList<UserRequest> dataResultList = new DataResultList<>();
         dataResultList.setResponseStatus(ResponseStatus.SUCCESS);
